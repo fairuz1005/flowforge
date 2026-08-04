@@ -303,24 +303,30 @@ No `READY` item may exceed 8 points.
 
 ---
 
+<a id="milestones"></a>
+
 ## 7. Milestones
 
 | Milestone | Goal | Required Epics |
 |---|---|---|
-| M0 | Repository, local platform, and web foundation | EPIC-00, EPIC-01, EPIC-20 |
-| M1 | Synchronous full-stack customer journey | EPIC-02, EPIC-03, EPIC-04, EPIC-05, EPIC-21, EPIC-22 |
-| M2 | Event-driven fulfillment workflow | EPIC-06, EPIC-07, EPIC-08, EPIC-09, EPIC-10 |
-| M3 | Reliability, observability, and operations console | EPIC-11, EPIC-12, EPIC-13, EPIC-23 |
-| M4 | Security and full-stack verification | EPIC-14, EPIC-15, EPIC-24 |
-| M5 | Kubernetes and delivery automation | EPIC-16, EPIC-17, EPIC-25 |
-| M6 | Performance and migration showcase | EPIC-18, EPIC-19 |
-| M7 | Portfolio release | EPIC-26 |
+| M0 | Repository, local platform, and web foundation | [EPIC-00](#epic-00), [EPIC-01](#epic-01), [EPIC-20](#epic-20) |
+| M1 | Synchronous full-stack customer journey | [EPIC-02](#epic-02), [EPIC-03](#epic-03), [EPIC-04](#epic-04), [EPIC-05](#epic-05), [EPIC-21](#epic-21), [EPIC-22](#epic-22) |
+| M2 | Event-driven fulfillment workflow | [EPIC-06](#epic-06), [EPIC-07](#epic-07), [EPIC-08](#epic-08), [EPIC-09](#epic-09), [EPIC-10](#epic-10) |
+| M3 | Reliability, observability, and operations console | [EPIC-11](#epic-11), [EPIC-12](#epic-12), [EPIC-13](#epic-13), [EPIC-23](#epic-23) |
+| M4 | Security and full-stack verification | [EPIC-14](#epic-14), [EPIC-15](#epic-15), [EPIC-24](#epic-24) |
+| M5 | Kubernetes and delivery automation | [EPIC-16](#epic-16), [EPIC-17](#epic-17), [EPIC-25](#epic-25) |
+| M6 | Performance and migration showcase | [EPIC-18](#epic-18), [EPIC-19](#epic-19) |
+| M7 | Portfolio release | [EPIC-26](#epic-26) |
 
 ---
 
 # 8. Backlog
 
+<a id="epic-00"></a>
+
 ## EPIC-00 — Repository Governance and Engineering Standards
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Establish a predictable workflow for developers and coding agents.
 
@@ -364,7 +370,7 @@ Do not add domain implementations in this ticket.
 
 ### FF-0002 — Add common Gradle conventions
 
-- **Status:** DRAFT
+- **Status:** READY
 - **Priority:** P0
 - **Estimate:** 3
 - **Dependencies:** FF-0001
@@ -386,7 +392,7 @@ Create convention plugins for Java, Spring Boot, testing, code coverage, formatt
 
 ### FF-0003 — Create contribution workflow
 
-- **Status:** DRAFT
+- **Status:** READY
 - **Priority:** P1
 - **Estimate:** 2
 - **Dependencies:** FF-0001
@@ -406,7 +412,7 @@ Add `CONTRIBUTING.md`, branch naming, commit conventions, pull-request template,
 
 ### FF-0004 — Create AGENTS.md
 
-- **Status:** DRAFT
+- **Status:** READY
 - **Priority:** P0
 - **Estimate:** 2
 - **Dependencies:** FF-0001
@@ -427,7 +433,7 @@ Create repository-level instructions for Codex and other coding agents.
 
 ### FF-0005 — Add architecture-decision process
 
-- **Status:** DRAFT
+- **Status:** READY
 - **Priority:** P1
 - **Estimate:** 2
 - **Dependencies:** FF-0001
@@ -441,7 +447,11 @@ Create repository-level instructions for Codex and other coding agents.
 
 ---
 
+<a id="epic-01"></a>
+
 ## EPIC-01 — Local Platform Foundation
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Provide a reproducible local platform and developer experience.
 
@@ -522,7 +532,11 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 ---
 
+<a id="epic-02"></a>
+
 ## EPIC-02 — API Gateway
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Provide a secure, observable external entry point.
 
@@ -622,7 +636,11 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 ---
 
+<a id="epic-03"></a>
+
 ## EPIC-03 — Customer Service
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Own customer profiles, status, and eligibility-related state.
 
@@ -714,7 +732,11 @@ GET   /api/v1/customers/{customerId}/subscriptions
 
 ---
 
+<a id="epic-04"></a>
+
 ## EPIC-04 — Catalog Service
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Own products, prices, add-ons, eligibility rules, and capacity reservations.
 
@@ -803,7 +825,11 @@ GET /internal/v1/products/{productCode}/validation
 
 ---
 
+<a id="epic-05"></a>
+
 ## EPIC-05 — Order Service Core
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Own orders, state transitions, timelines, and workflow coordination.
 
@@ -938,7 +964,11 @@ POST /api/v1/orders/{orderId}/retry
 
 ---
 
+<a id="epic-06"></a>
+
 ## EPIC-06 — Event Contracts and Kafka Foundation
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Establish stable, versioned asynchronous communication.
 
@@ -1042,7 +1072,11 @@ POST /api/v1/orders/{orderId}/retry
 
 ---
 
+<a id="epic-07"></a>
+
 ## EPIC-07 — Transactional Outbox and Idempotent Consumption
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Ensure reliable database-to-Kafka publication and duplicate-safe processing.
 
@@ -1100,7 +1134,11 @@ POST /api/v1/orders/{orderId}/retry
 
 ---
 
+<a id="epic-08"></a>
+
 ## EPIC-08 — Payment Service and Simulator
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Model authorization, capture, refund, callbacks, and provider instability.
 
@@ -1211,7 +1249,11 @@ POST /api/v1/orders/{orderId}/retry
 
 ---
 
+<a id="epic-09"></a>
+
 ## EPIC-09 — Provisioning Service and Provider Migration
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Demonstrate external integration, anti-corruption layers, and controlled provider migration.
 
@@ -1375,7 +1417,11 @@ public interface ProvisioningProvider {
 
 ---
 
+<a id="epic-10"></a>
+
 ## EPIC-10 — Saga Orchestration
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Coordinate the complete order workflow and compensation.
 
@@ -1501,7 +1547,11 @@ MarkOrderFailed
 
 ---
 
+<a id="epic-11"></a>
+
 ## EPIC-11 — Notification and Dead-Letter Processing
+
+[↑ Back to milestones](#milestones)
 
 ### FF-1101 — Bootstrap Notification Service
 
@@ -1564,7 +1614,11 @@ MarkOrderFailed
 
 ---
 
+<a id="epic-12"></a>
+
 ## EPIC-12 — Resilience and Reconciliation
+
+[↑ Back to milestones](#milestones)
 
 ### FF-1201 — Standardize HTTP client timeouts
 
@@ -1663,7 +1717,11 @@ MarkOrderFailed
 
 ---
 
+<a id="epic-13"></a>
+
 ## EPIC-13 — Observability
+
+[↑ Back to milestones](#milestones)
 
 ### FF-1301 — Add structured JSON logging
 
@@ -1813,7 +1871,11 @@ MarkOrderFailed
 
 ---
 
+<a id="epic-14"></a>
+
 ## EPIC-14 — Security and Audit
+
+[↑ Back to milestones](#milestones)
 
 ### FF-1401 — Define service authorization matrix
 
@@ -1906,7 +1968,11 @@ MarkOrderFailed
 
 ---
 
+<a id="epic-15"></a>
+
 ## EPIC-15 — Test Strategy and Quality Gates
+
+[↑ Back to milestones](#milestones)
 
 ### FF-1501 — Create test-support library
 
@@ -2031,7 +2097,11 @@ MarkOrderFailed
 
 ---
 
+<a id="epic-16"></a>
+
 ## EPIC-16 — Kubernetes and Helm
+
+[↑ Back to milestones](#milestones)
 
 ### FF-1601 — Create base Kubernetes manifests
 
@@ -2115,7 +2185,11 @@ MarkOrderFailed
 
 ---
 
+<a id="epic-17"></a>
+
 ## EPIC-17 — CI/CD
+
+[↑ Back to milestones](#milestones)
 
 ### FF-1701 — Create pull-request CI workflow
 
@@ -2197,7 +2271,11 @@ dependency-scan
 
 ---
 
+<a id="epic-18"></a>
+
 ## EPIC-18 — Performance and SQL Optimization
+
+[↑ Back to milestones](#milestones)
 
 ### FF-1801 — Create k6 order workload
 
@@ -2267,7 +2345,11 @@ dependency-scan
 
 ---
 
+<a id="epic-19"></a>
+
 ## EPIC-19 — Migration Showcase
+
+[↑ Back to milestones](#milestones)
 
 ### FF-1901 — Create migration compatibility report API
 
@@ -2334,7 +2416,11 @@ dependency-scan
 
 ---
 
+<a id="epic-20"></a>
+
 ## EPIC-20 — Next.js Web Foundation
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Establish a production-ready Next.js application and frontend engineering conventions.
 
@@ -2501,7 +2587,11 @@ Do not add feature-specific pages in this ticket.
 
 ---
 
+<a id="epic-21"></a>
+
 ## EPIC-21 — Web Authentication and Backend-for-Frontend Integration
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Securely connect the Next.js runtime to Keycloak and the Spring Cloud Gateway.
 
@@ -2641,7 +2731,11 @@ Configure Auth.js with Keycloak and a server-managed session.
 
 ---
 
+<a id="epic-22"></a>
+
 ## EPIC-22 — Customer Portal
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Deliver a complete customer journey from product discovery to subscription management.
 
@@ -2782,7 +2876,11 @@ Submit
 
 ---
 
+<a id="epic-23"></a>
+
 ## EPIC-23 — Operations Console
+
+[↑ Back to milestones](#milestones)
 
 **Goal:** Provide an auditable operational interface for investigation and recovery.
 
@@ -2907,7 +3005,11 @@ Submit
 
 ---
 
+<a id="epic-24"></a>
+
 ## EPIC-24 — Frontend Quality, Accessibility, and Observability
+
+[↑ Back to milestones](#milestones)
 
 ### FF-2401 — Establish frontend unit and component tests
 
@@ -3026,7 +3128,11 @@ Submit
 
 ---
 
+<a id="epic-25"></a>
+
 ## EPIC-25 — Web Deployment and Delivery
+
+[↑ Back to milestones](#milestones)
 
 ### FF-2501 — Create production Next.js Docker image
 
@@ -3144,7 +3250,11 @@ contract-drift-check
 
 ---
 
+<a id="epic-26"></a>
+
 ## EPIC-26 — Documentation and Portfolio Release
+
+[↑ Back to milestones](#milestones)
 
 ### FF-2601 — Write root README
 
