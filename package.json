@@ -1,0 +1,14 @@
+{
+  "name": "flowforge",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.14.0",
+  "scripts": {
+    "dev": "corepack pnpm --dir apps/web dev",
+    "lint": "corepack pnpm --dir apps/web lint",
+    "typecheck": "corepack pnpm --dir apps/web typecheck",
+    "test": "corepack pnpm --dir apps/web test",
+    "build": "corepack pnpm --dir apps/web build",
+    "start": "corepack pnpm --dir apps/web start"
+  }
+}

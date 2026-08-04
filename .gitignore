@@ -1,0 +1,29 @@
+# Gradle and Java
+.gradle/
+**/build/
+*.class
+
+# Node and Next.js
+node_modules/
+**/.next/
+**/out/
+pnpm-debug.log*
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# IDE and operating system
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Local platform data and reports
+platform/data/
+coverage/
+test-results/
+playwright-report/
