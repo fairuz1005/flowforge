@@ -3826,7 +3826,6 @@ Describe database migration, compatibility, deployment order, and rollback.
 ## Follow-up
 
 List explicitly deferred work and related backlog IDs.
-```
 
 ---
 
