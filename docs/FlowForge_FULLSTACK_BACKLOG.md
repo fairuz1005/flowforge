@@ -12,6 +12,7 @@ It defines:
 
 - Product scope and architecture boundaries
 - Delivery milestones
+- Solo delivery tiers for an independently developed portfolio release
 - Epics, stories, tasks, and dependencies
 - Acceptance criteria and required evidence
 - Coding-agent operating rules
@@ -46,7 +47,9 @@ The project must demonstrate:
 15. CI/CD quality gates for Java, TypeScript, containers, contracts, and infrastructure
 16. Clear architecture documentation and reproducible full-stack demos
 
-### 2.1 Runtime Architecture
+### 2.1 Target Runtime Architecture
+
+The diagram below represents the long-term target. The solo MVP follows the architecture overrides in Section 6 and does not deploy Customer, Catalog, or Notification as separate services.
 
 ```text
 Browser
@@ -301,6 +304,30 @@ Story-point guidance:
 
 No `READY` item may exceed 8 points.
 
+### Delivery tiers
+
+Delivery tier is separate from ticket status and priority. A ticket can be `DRAFT` and still belong to the MVP tier.
+
+| Tier | Meaning | Solo-project rule | Tickets | Story points |
+|---|---|---|---:|---:|
+| `MVP` | Smallest credible portfolio release | Complete before publicly presenting FlowForge as finished | 59 | 269 |
+| `PLUS` | High-value production and engineering depth | Start only after the MVP customer journey and failure path are stable | 54 | 238 |
+| `STRETCH` | Advanced or team-scale differentiation | Optional; implement selectively when it strengthens a specific interview story | 32 | 144 |
+
+The story-point totals are planning estimates rather than calendar commitments. The MVP intentionally avoids separate Customer, Catalog, and Notification services.
+
+### Solo MVP architecture overrides
+
+For the MVP tier, the following rules override broader long-term architecture descriptions elsewhere in this backlog:
+
+1. Customer identity comes from Keycloak claims and minimal order-owned customer data. `EPIC-03` remains Stretch.
+2. Product and price data are seeded and owned by a modular catalog package inside Order Service. Extracting Catalog Service under `EPIC-04` is Plus work.
+3. Notification behavior is represented by order events and logs. A separate Notification Service under `EPIC-11` is Stretch work.
+4. The MVP operations surface contains order investigation and provider-routing controls only. DLQ, reconciliation, audit, and compatibility-report screens follow in later tiers.
+5. Docker Compose must start infrastructure dependencies. Packaging every application into Compose and Kubernetes belongs to Plus.
+6. MVP verification consists of five backend end-to-end scenarios and five browser journeys. Later tiers expand the full scenario matrix.
+7. A ticket marked Plus or Stretch must not block an MVP ticket. Where the long-term architecture differs, the ticket-specific MVP note and dependency line are authoritative.
+
 ---
 
 <a id="milestones"></a>
@@ -341,6 +368,7 @@ No `READY` item may exceed 8 points.
 
 - **Status:** IN_REVIEW
 - **Priority:** P0
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** None
 - **Owner:** Unassigned
@@ -370,8 +398,9 @@ Do not add domain implementations in this ticket.
 
 ### FF-0002 — Add common Gradle conventions
 
-- **Status:** READY
+- **Status:** DRAFT
 - **Priority:** P0
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0001
 
@@ -392,8 +421,9 @@ Create convention plugins for Java, Spring Boot, testing, code coverage, formatt
 
 ### FF-0003 — Create contribution workflow
 
-- **Status:** READY
+- **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 2
 - **Dependencies:** FF-0001
 
@@ -412,8 +442,9 @@ Add `CONTRIBUTING.md`, branch naming, commit conventions, pull-request template,
 
 ### FF-0004 — Create AGENTS.md
 
-- **Status:** READY
+- **Status:** DRAFT
 - **Priority:** P0
+- **Delivery tier:** MVP
 - **Estimate:** 2
 - **Dependencies:** FF-0001
 
@@ -433,8 +464,9 @@ Create repository-level instructions for Codex and other coding agents.
 
 ### FF-0005 — Add architecture-decision process
 
-- **Status:** READY
+- **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 2
 - **Dependencies:** FF-0001
 
@@ -459,6 +491,7 @@ Create repository-level instructions for Codex and other coding agents.
 
 - **Status:** DRAFT
 - **Priority:** P0
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0001
 
@@ -488,6 +521,7 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-0101
 
@@ -504,6 +538,7 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 2
 - **Dependencies:** FF-0101
 
@@ -519,6 +554,7 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0101
 
@@ -544,6 +580,7 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0002, FF-0101
 
@@ -560,6 +597,7 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0201
 
@@ -578,6 +616,7 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0104, FF-0201
 
@@ -595,6 +634,7 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-0201, FF-0101
 
@@ -612,6 +652,7 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-0201
 
@@ -648,6 +689,7 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 3
 - **Dependencies:** FF-0002, FF-0101
 
@@ -664,6 +706,7 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-0301
 
@@ -693,6 +736,7 @@ Provision PostgreSQL, Kafka, Redis, Keycloak, Prometheus, Grafana, OpenTelemetry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-0302
 
@@ -720,6 +764,7 @@ GET   /api/v1/customers/{customerId}/subscriptions
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 3
 - **Dependencies:** FF-0203, FF-0303
 
@@ -744,6 +789,7 @@ GET   /api/v1/customers/{customerId}/subscriptions
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-0002, FF-0101
 
@@ -753,6 +799,7 @@ GET   /api/v1/customers/{customerId}/subscriptions
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-0401
 
@@ -771,6 +818,7 @@ GET   /api/v1/customers/{customerId}/subscriptions
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-0402
 
@@ -795,6 +843,7 @@ GET /internal/v1/products/{productCode}/validation
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-0402
 
@@ -812,6 +861,7 @@ GET /internal/v1/products/{productCode}/validation
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 3
 - **Dependencies:** FF-0403, FF-0101
 
@@ -837,6 +887,7 @@ GET /internal/v1/products/{productCode}/validation
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0002, FF-0101
 
@@ -846,6 +897,7 @@ GET /internal/v1/products/{productCode}/validation
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 8
 - **Dependencies:** FF-0501
 
@@ -879,14 +931,19 @@ FAILED
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-0502, FF-0303, FF-0403
+- **Dependencies:** FF-0502
 
 **Endpoint**
 
 ```http
 POST /api/v1/orders
 ```
+
+**MVP scope note**
+
+For MVP, identify the customer from the authenticated Keycloak subject and validate against minimal order-owned customer data. Products and prices come from a seeded catalog package inside Order Service. Separate Customer and Catalog services are not MVP dependencies.
 
 **Acceptance criteria**
 
@@ -904,6 +961,7 @@ POST /api/v1/orders
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0502
 
@@ -928,6 +986,7 @@ GET /api/v1/orders/{orderId}/timeline
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-0502
 
@@ -945,6 +1004,7 @@ GET /api/v1/orders/{orderId}/timeline
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-0502
 
@@ -976,6 +1036,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0002
 
@@ -1006,6 +1067,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 2
 - **Dependencies:** FF-0601
 
@@ -1023,6 +1085,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-0601
 
@@ -1059,6 +1122,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0101, FF-0602
 
@@ -1084,6 +1148,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 8
 - **Dependencies:** FF-0601
 
@@ -1104,6 +1169,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0601
 
@@ -1121,6 +1187,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-0701
 
@@ -1146,6 +1213,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0002, FF-0101, FF-0604
 
@@ -1155,6 +1223,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0801
 
@@ -1173,6 +1242,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0002
 
@@ -1201,6 +1271,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0702, FF-0802, FF-0803
 
@@ -1218,6 +1289,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0804
 
@@ -1235,6 +1307,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-0803, FF-0804
 
@@ -1261,6 +1334,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0002, FF-0101, FF-0604
 
@@ -1270,6 +1344,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0901
 
@@ -1287,6 +1362,7 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0902
 
@@ -1311,6 +1387,7 @@ public interface ProvisioningProvider {
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0903
 
@@ -1327,6 +1404,7 @@ public interface ProvisioningProvider {
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0903
 
@@ -1343,6 +1421,7 @@ public interface ProvisioningProvider {
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0702, FF-0904, FF-0905
 
@@ -1360,6 +1439,7 @@ public interface ProvisioningProvider {
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0906
 
@@ -1385,6 +1465,7 @@ public interface ProvisioningProvider {
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 8
 - **Dependencies:** FF-0904, FF-0905, FF-0907
 
@@ -1404,6 +1485,7 @@ public interface ProvisioningProvider {
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0907, FF-0203
 
@@ -1429,8 +1511,9 @@ public interface ProvisioningProvider {
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
-- **Dependencies:** FF-0502, FF-0603
+- **Dependencies:** FF-0502, FF-0601
 
 **Acceptance criteria**
 
@@ -1445,8 +1528,9 @@ public interface ProvisioningProvider {
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 8
-- **Dependencies:** FF-0404, FF-0701, FF-0804, FF-0906, FF-1001
+- **Dependencies:** FF-0701, FF-0804, FF-0906, FF-1001
 
 **Workflow**
 
@@ -1459,6 +1543,10 @@ ActivateSubscription
 CapturePayment
 CompleteOrder
 ```
+
+**MVP scope note**
+
+For MVP, reserve plan capacity through a module owned by Order Service. `FF-0404` later moves this responsibility into the extracted Catalog Service.
 
 **Acceptance criteria**
 
@@ -1475,6 +1563,7 @@ CompleteOrder
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 8
 - **Dependencies:** FF-1002, FF-0805
 
@@ -1501,6 +1590,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-0505, FF-1002, FF-1003
 
@@ -1518,6 +1608,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1002
 
@@ -1535,6 +1626,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1002, FF-1005
 
@@ -1557,6 +1649,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 3
 - **Dependencies:** FF-0002, FF-0604
 
@@ -1566,6 +1659,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-0702, FF-1101
 
@@ -1583,6 +1677,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1102
 
@@ -1600,6 +1695,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1103, FF-0203
 
@@ -1624,6 +1720,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0803, FF-0904, FF-0905
 
@@ -1640,6 +1737,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1201
 
@@ -1656,6 +1754,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 3
 - **Dependencies:** FF-1201
 
@@ -1672,6 +1771,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1005, FF-1006
 
@@ -1689,6 +1789,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-0805, FF-1003
 
@@ -1705,6 +1806,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-0906, FF-1002
 
@@ -1727,6 +1829,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0002
 
@@ -1758,6 +1861,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0101, FF-1301
 
@@ -1776,6 +1880,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0101
 
@@ -1816,6 +1921,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1303
 
@@ -1833,6 +1939,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-0101, FF-1301
 
@@ -1849,6 +1956,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 3
 - **Dependencies:** FF-1303
 
@@ -1881,6 +1989,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 2
 - **Dependencies:** FF-0203
 
@@ -1897,6 +2006,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-0104, FF-1401
 
@@ -1914,6 +2024,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1401
 
@@ -1939,6 +2050,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-0002
 
@@ -1955,6 +2067,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-0201
 
@@ -1978,6 +2091,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-0002
 
@@ -1995,8 +2109,9 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
-- **Dependencies:** FF-1501
+- **Dependencies:** FF-0101
 
 **Acceptance criteria**
 
@@ -2012,6 +2127,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 8
 - **Dependencies:** FF-0603, FF-0804, FF-0906
 
@@ -2037,25 +2153,28 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 8
-- **Dependencies:** FF-1003, FF-1103, FF-1302
+- **Dependencies:** FF-1003, FF-1302
 
-**Required scenarios**
+**MVP required scenarios**
 
 1. Successful order
 2. Payment declined
-3. Payment timeout
-4. Provisioning failure and successful refund
-5. Refund failure requiring reconciliation
-6. Duplicate order request
-7. Duplicate Kafka event
-8. Duplicate provider callback
-9. Legacy-provider outage
-10. Next-generation provider routing
-11. Dead-letter replay
-12. Concurrent cancellation and completion
-13. Service restart during workflow
-14. Outbox recovery after Kafka outage
+3. Provisioning failure followed by successful refund
+4. Duplicate order request and duplicate event safety
+5. Next-generation provider selected through migration routing
+
+**Plus and Stretch additions**
+
+- Payment timeout
+- Refund failure requiring reconciliation
+- Duplicate provider callback
+- Legacy-provider outage
+- Dead-letter replay
+- Concurrent cancellation and completion
+- Service restart during workflow
+- Outbox recovery after Kafka outage
 
 **Acceptance criteria**
 
@@ -2070,6 +2189,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** PLUS
 - **Estimate:** 2
 - **Dependencies:** FF-0002
 
@@ -2086,6 +2206,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P3
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-0502, FF-0802, FF-0902
 
@@ -2107,6 +2228,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-0101
 
@@ -2124,6 +2246,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 8
 - **Dependencies:** FF-1601
 
@@ -2141,6 +2264,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1602, FF-1303
 
@@ -2157,6 +2281,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1602
 
@@ -2173,6 +2298,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1602, FF-1006
 
@@ -2195,6 +2321,7 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P0
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0002
 
@@ -2224,6 +2351,7 @@ dependency-scan
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1701, FF-1404
 
@@ -2242,6 +2370,7 @@ dependency-scan
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1602, FF-1702
 
@@ -2259,6 +2388,7 @@ dependency-scan
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 3
 - **Dependencies:** FF-1703
 
@@ -2281,6 +2411,7 @@ dependency-scan
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1002, FF-1303
 
@@ -2298,6 +2429,7 @@ dependency-scan
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1202, FF-1203, FF-1801
 
@@ -2314,6 +2446,7 @@ dependency-scan
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-0504, FF-1006
 
@@ -2332,6 +2465,7 @@ dependency-scan
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1006, FF-1605, FF-1801
 
@@ -2355,6 +2489,7 @@ dependency-scan
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-0908
 
@@ -2371,6 +2506,7 @@ dependency-scan
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 3
 - **Dependencies:** FF-1304, FF-1901
 
@@ -2386,6 +2522,7 @@ dependency-scan
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-0904, FF-0905
 
@@ -2403,8 +2540,9 @@ dependency-scan
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-0907, FF-0909, FF-1902
+- **Dependencies:** FF-0907, FF-0909, FF-1303, FF-2305
 
 **Acceptance criteria**
 
@@ -2436,6 +2574,7 @@ dependency-scan
 
 - **Status:** IN_REVIEW
 - **Priority:** P0
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-0001
 - **Owner:** Unassigned
@@ -2470,6 +2609,7 @@ Do not add feature-specific pages in this ticket.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-2001
 
@@ -2497,6 +2637,7 @@ Do not add feature-specific pages in this ticket.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-2001
 
@@ -2535,6 +2676,7 @@ Do not add feature-specific pages in this ticket.
 
 - **Status:** DRAFT
 - **Priority:** P0
+- **Delivery tier:** MVP
 - **Estimate:** 3
 - **Dependencies:** FF-2001
 
@@ -2553,8 +2695,9 @@ Do not add feature-specific pages in this ticket.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
-- **Dependencies:** FF-2002, FF-2003
+- **Dependencies:** FF-2002
 
 **Acceptance criteria**
 
@@ -2572,8 +2715,9 @@ Do not add feature-specific pages in this ticket.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-2002, FF-2003
+- **Dependencies:** FF-2002
 
 **Acceptance criteria**
 
@@ -2599,6 +2743,7 @@ Do not add feature-specific pages in this ticket.
 
 - **Status:** DRAFT
 - **Priority:** P0
+- **Delivery tier:** MVP
 - **Estimate:** 8
 - **Dependencies:** FF-0104, FF-2001
 
@@ -2625,8 +2770,9 @@ Configure Auth.js with Keycloak and a server-managed session.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-2101, FF-1401
+- **Dependencies:** FF-2101
 
 **Acceptance criteria**
 
@@ -2643,6 +2789,7 @@ Configure Auth.js with Keycloak and a server-managed session.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-2001, FF-0303, FF-0403, FF-0503, FF-0504
 
@@ -2662,8 +2809,13 @@ Configure Auth.js with Keycloak and a server-managed session.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-2101, FF-2103, FF-0202
+- **Dependencies:** FF-2101, FF-0202
+
+**MVP scope note**
+
+The MVP may use a small, explicitly typed server-only client. `FF-2103` later replaces handwritten request types with reproducible OpenAPI generation.
 
 **Acceptance criteria**
 
@@ -2682,6 +2834,7 @@ Configure Auth.js with Keycloak and a server-managed session.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-2104
 
@@ -2701,6 +2854,7 @@ Configure Auth.js with Keycloak and a server-managed session.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-2101, FF-2104
 
@@ -2718,6 +2872,7 @@ Configure Auth.js with Keycloak and a server-managed session.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-2001, FF-2101, FF-1405
 
@@ -2743,8 +2898,9 @@ Configure Auth.js with Keycloak and a server-managed session.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-2006, FF-2104, FF-0303, FF-0504
+- **Dependencies:** FF-2006, FF-2104, FF-0504
 
 **Acceptance criteria**
 
@@ -2761,8 +2917,13 @@ Configure Auth.js with Keycloak and a server-managed session.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-2006, FF-2103, FF-0403
+- **Dependencies:** FF-2006, FF-2104, FF-0503
+
+**MVP scope note**
+
+For MVP, this page consumes the Order Service catalog endpoint through the Next.js BFF. After `FF-0403` is complete, the BFF may switch to the extracted Catalog Service without changing browser-facing routes.
 
 **Acceptance criteria**
 
@@ -2779,6 +2940,7 @@ Configure Auth.js with Keycloak and a server-managed session.
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 8
 - **Dependencies:** FF-2202, FF-2105, FF-0503
 
@@ -2810,6 +2972,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-2203, FF-0504, FF-1002
 
@@ -2829,6 +2992,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-2204, FF-0505, FF-2105
 
@@ -2848,6 +3012,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-2201, FF-1002
 
@@ -2864,6 +3029,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1102, FF-2201
 
@@ -2888,6 +3054,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-2006, FF-2102, FF-1303
 
@@ -2905,6 +3072,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0504, FF-2104, FF-2102
 
@@ -2922,6 +3090,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1204, FF-0506, FF-1403, FF-2302
 
@@ -2940,6 +3109,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1104, FF-2105, FF-1403
 
@@ -2957,8 +3127,13 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-0909, FF-2105, FF-1403
+- **Dependencies:** FF-0909, FF-2105
+
+**MVP scope note**
+
+The MVP supports deterministic percentage routing and a manual Legacy/NextGen selection. Product allowlists, expiry, and complex rule precedence can be completed in Plus or Stretch work.
 
 **Acceptance criteria**
 
@@ -2975,6 +3150,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1901, FF-1902, FF-2104
 
@@ -2992,6 +3168,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1403, FF-2104
 
@@ -3015,8 +3192,9 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-2001, FF-2003
+- **Dependencies:** FF-2001
 
 **Acceptance criteria**
 
@@ -3032,23 +3210,27 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 8
-- **Dependencies:** FF-1504, FF-2205, FF-2305
+- **Dependencies:** FF-1504, FF-2204, FF-2305
 
-**Required journeys**
+**MVP required journeys**
 
-1. Customer login and dashboard
-2. Product discovery and checkout
-3. Live order completion
-4. Provisioning failure and compensation
-5. Duplicate checkout submission
-6. Customer cancellation
-7. Support order investigation
-8. Operations stuck-order recovery
-9. Dead-letter replay
-10. Provider migration change
-11. Unauthorized role denial
-12. Session expiry recovery
+1. Customer login and product discovery
+2. Successful checkout and live order completion
+3. Provisioning failure and compensation
+4. Duplicate checkout submission
+5. Operations provider-routing change
+
+**Plus and Stretch additions**
+
+- Customer cancellation
+- Support order investigation
+- Operations stuck-order recovery
+- Dead-letter replay
+- Unauthorized role denial
+- Session-expiry recovery
+- Migration compatibility report
 
 **Acceptance criteria**
 
@@ -3064,6 +3246,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-2003, FF-2402
 
@@ -3081,6 +3264,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1302, FF-2005, FF-2104
 
@@ -3099,6 +3283,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P2
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-2204, FF-2301
 
@@ -3116,6 +3301,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P3
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-2003, FF-2402
 
@@ -3138,6 +3324,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-2001, FF-2004
 
@@ -3157,6 +3344,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 3
 - **Dependencies:** FF-0101, FF-2501, FF-2101
 
@@ -3174,6 +3362,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1602, FF-2501
 
@@ -3192,6 +3381,7 @@ Submit
 
 - **Status:** DRAFT
 - **Priority:** P0
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-1701, FF-2001, FF-2401
 
@@ -3221,6 +3411,7 @@ contract-drift-check
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1703, FF-2402, FF-2503
 
@@ -3238,6 +3429,7 @@ contract-drift-check
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** FF-2503, FF-2106
 
@@ -3260,8 +3452,9 @@ contract-drift-check
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** M5 complete
+- **Dependencies:** MVP functional slice complete through FF-2402
 
 **Required sections**
 
@@ -3294,6 +3487,7 @@ contract-drift-check
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** PLUS
 - **Estimate:** 5
 - **Dependencies:** M5 complete
 
@@ -3311,6 +3505,7 @@ contract-drift-check
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** STRETCH
 - **Estimate:** 5
 - **Dependencies:** FF-1204, FF-1306, FF-1104
 
@@ -3338,8 +3533,9 @@ contract-drift-check
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 3
-- **Dependencies:** FF-1904, FF-1504
+- **Dependencies:** FF-0907, FF-0909, FF-1504, FF-2305
 
 **Required demo paths**
 
@@ -3362,16 +3558,17 @@ contract-drift-check
 
 - **Status:** DRAFT
 - **Priority:** P1
+- **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** All P0 and P1 items
+- **Dependencies:** All MVP-tier tickets
 
 **Acceptance criteria**
 
 - Clean-clone setup is verified.
 - CI and release workflows pass.
-- Major routes pass automated accessibility checks and documented manual keyboard review.
+- MVP routes pass basic keyboard checks; comprehensive automated accessibility validation is a Plus requirement.
 - Responsive behavior is verified at supported mobile and desktop widths.
-- Web performance measurements are published with the test environment.
+- Any published performance number includes the test environment and method; formal web performance budgets are a Plus requirement.
 - Known limitations are documented.
 - Security scans have no unresolved critical findings.
 - Demo recording and deployed web application are linked when public hosting is available.
@@ -3760,69 +3957,85 @@ These rules apply to every relevant ticket.
 
 ---
 
-# 13. Release Quality Gates
+# 13. Tiered Release Quality Gates
 
-The portfolio-ready release cannot ship unless:
+## 13.1 MVP release gate
 
-- All P0 and P1 tickets are `DONE`.
-- Clean checkout builds both Gradle and pnpm workspaces successfully.
-- Local environment starts the complete Next.js, gateway, service, identity, messaging, database, and observability stack successfully.
-- Kubernetes manifests and Helm charts validate.
-- Backend end-to-end and Playwright customer/operations journey suites pass.
-- Contract tests pass.
-- No unresolved critical vulnerability remains.
-- Successful and compensated workflows are demonstrated through the web application.
-- Duplicate requests, events, and callbacks are proven safe.
-- At least one full distributed trace is captured from browser interaction through Next.js and all participating backend services.
-- Dashboards display business and system metrics.
-- SQL optimization case study is published.
-- Performance results are measured and reproducible.
-- Major routes pass automated accessibility checks and documented manual keyboard review.
-- Responsive behavior is verified at supported mobile and desktop widths.
-- Web performance measurements are published with the test environment.
-- Known limitations are documented.
-- Demo script and recording are available.
+The MVP can be published when:
 
----
+- All tickets marked `MVP` are `DONE`.
+- A clean checkout builds the required Gradle modules and Next.js application.
+- Docker Compose starts PostgreSQL, Kafka, Keycloak, and observability dependencies.
+- The customer can sign in, browse seeded products, submit an order, and view its live timeline.
+- Successful payment and provisioning complete the order.
+- Provisioning failure triggers a refund and visible Saga compensation.
+- Duplicate order requests and duplicate events are proven safe.
+- Legacy and NextGen provider simulators are both usable through deterministic routing.
+- Operations users can inspect an order and change the provider-routing percentage.
+- The five MVP backend scenarios and five MVP browser journeys pass.
+- Structured logs, traces, and service metrics provide enough evidence to investigate one order.
+- Pull-request CI passes, no secrets are committed, and known limitations are documented.
+- README, architecture overview, and five-to-eight-minute demo script are complete.
 
-# 14. Initial Execution Order
+## 13.2 Portfolio Plus release gate
 
-Recommended first sequence:
+The Plus release requires the MVP gate and all tickets marked `PLUS` that have been selected for the release. A recommended complete Plus release adds:
 
-1. FF-0001 — Initialize monorepo
-2. FF-0002 — Common Gradle conventions
-3. FF-0004 — Create AGENTS.md
-4. FF-2001 — Initialize Next.js application
-5. FF-2002 and FF-2004 — Frontend architecture and environment validation
-6. FF-0101 — Docker Compose platform
-7. FF-0104 — Keycloak realm
-8. FF-2101 and FF-2102 — Web authentication and authorization
-9. FF-0601 — Event envelope
-10. FF-0301 and FF-0401 — Customer and Catalog bootstrap
-11. FF-0501 and FF-0502 — Order bootstrap and aggregate
-12. FF-0302 through FF-0304 — Customer vertical slice
-13. FF-0402 through FF-0404 — Catalog vertical slice
-14. FF-0503 and FF-0504 — Synchronous order APIs
-15. FF-2103 through FF-2105 — Typed BFF integration
-16. FF-2003, FF-2005, and FF-2006 — Design system and application shell
-17. FF-2201 through FF-2204 — Dashboard, catalog, checkout, and order timeline
-18. FF-0602 through FF-0604 — Kafka foundation
-19. FF-0701 and FF-0702 — Outbox and idempotency
-20. FF-0801 through FF-0805 — Payment flow
-21. FF-0901 through FF-0907 — Provisioning and migration routing
-22. FF-1001 through FF-1006 — Saga and recovery
-23. FF-2205 and FF-2206 — Cancellation and subscription detail
-24. FF-2301 through FF-2306 — Operations console
-25. Reliability, observability, security, and full-stack quality epics
-26. Kubernetes, CI/CD, performance, migration showcase, and portfolio release
+- Extracted Catalog Service
+- Cancellation, workflow timeout, restart recovery, and stuck-order reconciliation
+- Circuit breakers, centralized logs, Grafana dashboards, and audit records
+- Contract tests, expanded security checks, and measured API/SQL performance
+- Kubernetes and Helm deployment
+- Generated OpenAPI TypeScript client
+- Accessibility checks and frontend performance budgets
+- Migration compatibility and controlled-cutover documentation
 
-Parallel work is allowed only when dependencies, route ownership, design-system ownership, and contract ownership are clear.
+Plus tickets may be published incrementally; they do not need to wait for every other Plus ticket unless a specific dependency requires it.
 
----
+## 13.3 Stretch completion
 
-# 15. Deferred and Stretch Scope
+Stretch tickets are optional and do not block a portfolio release. Select them only when they deepen a deliberate interview narrative, such as shadow migration comparison, DLQ operations, advanced reconciliation, autoscaling, network policy, visual regression, or deployment automation.
 
-The following items are intentionally outside the minimum portfolio release unless promoted through a backlog update:
+# 14. Solo Execution Order
+
+## 14.1 MVP sequence
+
+1. Repository and agent foundation: FF-0001, FF-0004
+2. Next.js and local platform foundation: FF-2001, FF-2002, FF-2004, FF-0101
+3. Keycloak, gateway, and web authentication: FF-0104, FF-0201 through FF-0203, FF-2101, FF-2102
+4. Order Service and seeded catalog/customer modules: FF-0501 through FF-0504
+5. Kafka contracts and local messaging: FF-0601, FF-0602, FF-0604
+6. Outbox and duplicate-safe consumers: FF-0701, FF-0702
+7. Payment Service and provider simulator: FF-0801 through FF-0805
+8. Provisioning Service, both simulators, and routing: FF-0901 through FF-0907, FF-0909
+9. Successful Saga and compensation: FF-1001 through FF-1003, FF-1201
+10. BFF and customer portal: FF-2104, FF-2105, FF-2202 through FF-2204
+11. Operations investigation and routing controls: FF-2302, FF-2305
+12. Logs, traces, and metrics: FF-1301 through FF-1303
+13. Backend and browser verification: FF-1502, FF-1504, FF-2401, FF-2402
+14. CI and release material: FF-1701, FF-2601, FF-2604, FF-2605
+
+Do not start a later step merely because one ticket in the current step is inconvenient. Either finish its dependency, refine it, or document a genuine blocker.
+
+## 14.2 Plus sequence
+
+After the MVP is stable, prefer this order:
+
+1. Cancellation, timeouts, restart recovery, and stuck-order recovery
+2. Generated API clients, stronger web security, and session recovery
+3. Catalog Service extraction and customer dashboard improvements
+4. Circuit breakers, dashboards, centralized logs, and audit records
+5. Contract testing, accessibility, performance, and SQL evidence
+6. Kubernetes, Helm, container delivery, and rolling-update validation
+7. Migration documentation and compatibility reporting selected for the portfolio story
+
+## 14.3 Stretch selection
+
+Choose Stretch tickets individually. Do not promote an entire Stretch epic automatically. Every selected Stretch ticket must state which portfolio capability or interview discussion it strengthens.
+
+# 15. Outside the Current Three-Tier Plan
+
+The following items remain outside MVP, Plus, and Stretch unless promoted through a future backlog update:
 
 - GraphQL
 - Service mesh
@@ -3840,7 +4053,7 @@ The following items are intentionally outside the minimum portfolio release unle
 - Usage-based charging
 - Machine-learning recommendations
 
-Adding these before the P1 release is complete should be treated as scope risk.
+Adding these before the MVP release is complete should be treated as scope risk.
 
 ---
 
@@ -3852,6 +4065,8 @@ Adding these before the P1 release is complete should be treated as scope risk.
 - Split any item estimated above 8 points.
 - Link defects to the originating ticket.
 - Reassess priorities at milestone boundaries.
+- Reassess delivery tiers only at MVP or Plus review boundaries; do not promote scope silently.
+- A Plus or Stretch ticket may be pulled forward only when all of its MVP dependencies are complete.
 - Preserve completed ticket history.
 - Record scope removals under `DEFERRED`, not deletion.
 - Keep acceptance criteria implementation-neutral unless architecture requires a specific approach.
