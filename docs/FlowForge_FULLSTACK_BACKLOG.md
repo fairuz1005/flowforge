@@ -310,8 +310,8 @@ Delivery tier is separate from ticket status and priority. A ticket can be `DRAF
 
 | Tier | Meaning | Solo-project rule | Tickets | Story points |
 |---|---|---|---:|---:|
-| `MVP` | Smallest credible portfolio release | Complete before publicly presenting FlowForge as finished | 59 | 269 |
-| `PLUS` | High-value production and engineering depth | Start only after the MVP customer journey and failure path are stable | 54 | 238 |
+| `MVP` | Smallest credible portfolio release | Complete before publicly presenting FlowForge as finished | 63 | 288 |
+| `PLUS` | High-value production and engineering depth | Start only after the MVP customer journey and failure path are stable | 51 | 226 |
 | `STRETCH` | Advanced or team-scale differentiation | Optional; implement selectively when it strengthens a specific interview story | 32 | 144 |
 
 The story-point totals are planning estimates rather than calendar commitments. The MVP intentionally avoids separate Customer, Catalog, and Notification services.
@@ -327,6 +327,16 @@ For the MVP tier, the following rules override broader long-term architecture de
 5. Docker Compose must start infrastructure dependencies. Packaging every application into Compose and Kubernetes belongs to Plus.
 6. MVP verification consists of five backend end-to-end scenarios and five browser journeys. Later tiers expand the full scenario matrix.
 7. A ticket marked Plus or Stretch must not block an MVP ticket. Where the long-term architecture differs, the ticket-specific MVP note and dependency line are authoritative.
+
+### Dependency tier rules
+
+- An `MVP` ticket may depend only on other `MVP` tickets.
+- A `PLUS` ticket may depend on `MVP` or `PLUS` tickets, but not on `STRETCH`.
+- A `STRETCH` ticket may depend on any earlier tier.
+- Dependencies must represent implementation prerequisites, not merely related work.
+- A dependency may be listed explicitly even when it is transitively reachable if the contract, security decision, or operational capability is a direct prerequisite.
+- Release tickets must not depend on themselves; `All other MVP-tier tickets` explicitly excludes the release ticket containing that phrase.
+- The dependency graph must remain acyclic and must be validated whenever tiers or dependencies change.
 
 ---
 
@@ -933,7 +943,7 @@ FAILED
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-0502
+- **Dependencies:** FF-0203, FF-0502, FF-0507, FF-1401
 
 **Endpoint**
 
@@ -957,23 +967,26 @@ For MVP, identify the customer from the authenticated Keycloak subject and valid
 
 ---
 
-### FF-0504 — Implement order query and timeline APIs
+### FF-0504 — Implement order query, search, and timeline APIs
 
 - **Status:** DRAFT
 - **Priority:** P1
 - **Delivery tier:** MVP
-- **Estimate:** 3
-- **Dependencies:** FF-0502
+- **Estimate:** 5
+- **Dependencies:** FF-0203, FF-0502, FF-1401
 
 **Endpoints**
 
 ```http
+GET /api/v1/orders
 GET /api/v1/orders/{orderId}
 GET /api/v1/orders/{orderId}/timeline
 ```
 
 **Acceptance criteria**
 
+- Order search supports order ID, authenticated customer ownership, status, provider, and time-range filters appropriate to the caller's role.
+- Search results are paginated, indexed, and safely redacted.
 - Order view contains current state and summarized failure information.
 - Timeline is ordered and immutable.
 - Authorization restricts customer access to owned orders.
@@ -988,7 +1001,7 @@ GET /api/v1/orders/{orderId}/timeline
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-0502
+- **Dependencies:** FF-0502, FF-1401
 
 **Acceptance criteria**
 
@@ -1006,7 +1019,7 @@ GET /api/v1/orders/{orderId}/timeline
 - **Priority:** P2
 - **Delivery tier:** PLUS
 - **Estimate:** 3
-- **Dependencies:** FF-0502
+- **Dependencies:** FF-0502, FF-1401, FF-1403
 
 **Endpoint**
 
@@ -1021,6 +1034,38 @@ POST /api/v1/orders/{orderId}/retry
 - Retry action is audited.
 - Original failure context remains visible.
 - Duplicate retry request does not create duplicate side effects.
+
+---
+
+
+### FF-0507 — Implement embedded MVP catalog and capacity module
+
+- **Status:** DRAFT
+- **Priority:** P1
+- **Delivery tier:** MVP
+- **Estimate:** 5
+- **Dependencies:** FF-0501
+
+**Scope**
+
+Implement the solo-MVP product catalog, price lookup, eligibility validation, and capacity reservation as a modular package owned by Order Service. This package is the source of truth until Catalog Service is extracted under `EPIC-04`.
+
+**Endpoints**
+
+```http
+GET /api/v1/products
+GET /api/v1/products/{productCode}
+```
+
+**Acceptance criteria**
+
+- Two or more seeded products and optional add-ons are available through versioned APIs.
+- Product and price validation is reusable by order creation without HTTP calls inside Order Service.
+- Capacity reservation is idempotent and cannot make available capacity negative.
+- Reservation expiry and release behavior are represented sufficiently for the MVP Saga.
+- Public query APIs are paginated where applicable and documented through OpenAPI.
+- Package boundaries allow later extraction to Catalog Service without changing browser-facing routes.
+- Repository and integration tests cover product lookup, invalid product, duplicate reservation, release, and concurrent reservation.
 
 ---
 
@@ -1085,9 +1130,13 @@ POST /api/v1/orders/{orderId}/retry
 
 - **Status:** DRAFT
 - **Priority:** P1
-- **Delivery tier:** PLUS
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-0601
+
+**MVP scope note**
+
+Define the Order, Payment, Provisioning, refund, and compensation commands/events required by `FF-1001` through `FF-1003`. Customer lifecycle and Notification events may be documented as reserved contracts but do not require their separate services in the MVP.
 
 **Minimum events**
 
@@ -1273,7 +1322,7 @@ POST /api/v1/orders/{orderId}/retry
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-0702, FF-0802, FF-0803
+- **Dependencies:** FF-0603, FF-0701, FF-0702, FF-0802, FF-0803
 
 **Acceptance criteria**
 
@@ -1423,7 +1472,7 @@ public interface ProvisioningProvider {
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-0702, FF-0904, FF-0905
+- **Dependencies:** FF-0603, FF-0701, FF-0702, FF-0904, FF-0905
 
 **Acceptance criteria**
 
@@ -1487,7 +1536,11 @@ public interface ProvisioningProvider {
 - **Priority:** P2
 - **Delivery tier:** MVP
 - **Estimate:** 3
-- **Dependencies:** FF-0907, FF-0203
+- **Dependencies:** FF-0203, FF-0907, FF-1401
+
+**MVP scope note**
+
+Persist an append-only routing-change history inside Provisioning Service. `FF-1403` later consolidates privileged operations into the shared audit model.
 
 **Acceptance criteria**
 
@@ -1513,7 +1566,7 @@ public interface ProvisioningProvider {
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 3
-- **Dependencies:** FF-0502, FF-0601
+- **Dependencies:** FF-0502, FF-0603
 
 **Acceptance criteria**
 
@@ -1530,7 +1583,7 @@ public interface ProvisioningProvider {
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 8
-- **Dependencies:** FF-0701, FF-0804, FF-0906, FF-1001
+- **Dependencies:** FF-0507, FF-0701, FF-0805, FF-0906, FF-1001
 
 **Workflow**
 
@@ -1546,7 +1599,7 @@ CompleteOrder
 
 **MVP scope note**
 
-For MVP, reserve plan capacity through a module owned by Order Service. `FF-0404` later moves this responsibility into the extracted Catalog Service.
+For MVP, customer validation uses Keycloak claims plus minimal order-owned data, product validation and capacity reservation use `FF-0507`, and subscription activation is represented by an order-owned subscription record. `FF-0404` later moves catalog capacity into the extracted Catalog Service.
 
 **Acceptance criteria**
 
@@ -1697,7 +1750,7 @@ MarkOrderFailed
 - **Priority:** P2
 - **Delivery tier:** STRETCH
 - **Estimate:** 5
-- **Dependencies:** FF-1103, FF-0203
+- **Dependencies:** FF-0203, FF-1103, FF-1403
 
 **Acceptance criteria**
 
@@ -1773,7 +1826,7 @@ MarkOrderFailed
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-1005, FF-1006
+- **Dependencies:** FF-1005, FF-1006, FF-1403
 
 **Acceptance criteria**
 
@@ -1929,7 +1982,7 @@ MarkOrderFailed
 
 - Dashboard provisioning is source controlled.
 - Main dashboard shows throughput, success rate, P95 latency, workflow failures, consumer lag, and provider health.
-- Migration dashboard shows provider traffic and compatibility.
+- Main dashboard shows Legacy/NextGen traffic and provider errors; compatibility reporting remains under `FF-1901` and `FF-1902`.
 - Panels link to relevant logs or traces where supported.
 - Dashboard screenshots are stored in documentation.
 
@@ -1958,7 +2011,7 @@ MarkOrderFailed
 - **Priority:** P2
 - **Delivery tier:** STRETCH
 - **Estimate:** 3
-- **Dependencies:** FF-1303
+- **Dependencies:** FF-0703, FF-1103, FF-1202, FF-1204, FF-1303
 
 **Minimum alerts**
 
@@ -1989,9 +2042,13 @@ MarkOrderFailed
 
 - **Status:** DRAFT
 - **Priority:** P1
-- **Delivery tier:** PLUS
+- **Delivery tier:** MVP
 - **Estimate:** 2
 - **Dependencies:** FF-0203
+
+**MVP scope note**
+
+Define the customer, support, operations, and admin permissions needed by the MVP gateway, Order Service, Provisioning Service, and Next.js route groups. Detailed service-to-service scopes are completed in `FF-1402`.
 
 **Acceptance criteria**
 
@@ -2008,7 +2065,7 @@ MarkOrderFailed
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-0104, FF-1401
+- **Dependencies:** FF-0104, FF-0501, FF-0801, FF-0901, FF-1401
 
 **Acceptance criteria**
 
@@ -2052,7 +2109,7 @@ MarkOrderFailed
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 3
-- **Dependencies:** FF-0002
+- **Dependencies:** FF-0002, FF-1701
 
 **Acceptance criteria**
 
@@ -2069,7 +2126,7 @@ MarkOrderFailed
 - **Priority:** P2
 - **Delivery tier:** PLUS
 - **Estimate:** 3
-- **Dependencies:** FF-0201
+- **Dependencies:** FF-0201, FF-0203
 
 **Acceptance criteria**
 
@@ -2093,7 +2150,7 @@ MarkOrderFailed
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-0002
+- **Dependencies:** FF-0002, FF-1502
 
 **Acceptance criteria**
 
@@ -2111,7 +2168,7 @@ MarkOrderFailed
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 3
-- **Dependencies:** FF-0101
+- **Dependencies:** FF-0002, FF-0101
 
 **Acceptance criteria**
 
@@ -2129,7 +2186,7 @@ MarkOrderFailed
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 8
-- **Dependencies:** FF-0603, FF-0804, FF-0906
+- **Dependencies:** FF-0603, FF-0804, FF-0904, FF-0905, FF-0906, FF-2103
 
 **Required contracts**
 
@@ -2155,7 +2212,7 @@ MarkOrderFailed
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 8
-- **Dependencies:** FF-1003, FF-1302
+- **Dependencies:** FF-0503, FF-0907, FF-1003, FF-1302, FF-1502
 
 **MVP required scenarios**
 
@@ -2180,7 +2237,7 @@ MarkOrderFailed
 
 - Tests run from one command.
 - Test data is isolated.
-- Failed scenarios retain browser screenshots, video or trace files, backend logs, and distributed traces as artifacts.
+- Failed scenarios retain backend logs, test reports, simulator state, and distributed traces as artifacts. Browser screenshots and video belong to `FF-2402`.
 - Scenarios are deterministic.
 
 ---
@@ -2230,7 +2287,7 @@ MarkOrderFailed
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-0101
+- **Dependencies:** FF-0101, FF-1702
 
 **Acceptance criteria**
 
@@ -2323,7 +2380,7 @@ MarkOrderFailed
 - **Priority:** P0
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-0002
+- **Dependencies:** FF-0002, FF-1502, FF-2001, FF-2401
 
 **Stages**
 
@@ -2353,7 +2410,7 @@ dependency-scan
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-1701, FF-1404
+- **Dependencies:** FF-1404, FF-1701, FF-2501
 
 **Acceptance criteria**
 
@@ -2448,7 +2505,7 @@ dependency-scan
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-0504, FF-1006
+- **Dependencies:** FF-0504
 
 **Acceptance criteria**
 
@@ -2542,7 +2599,7 @@ dependency-scan
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-0907, FF-0909, FF-1303, FF-2305
+- **Dependencies:** FF-0909, FF-1303, FF-1403, FF-2305
 
 **Acceptance criteria**
 
@@ -2637,28 +2694,23 @@ Do not add feature-specific pages in this ticket.
 
 - **Status:** DRAFT
 - **Priority:** P1
-- **Delivery tier:** PLUS
+- **Delivery tier:** MVP
 - **Estimate:** 5
 - **Dependencies:** FF-2001
 
-**Minimum components**
+**MVP components**
 
-- Button
-- Link
-- Text input
-- Select
-- Checkbox
+- Button and link
+- Text input, select, and checkbox
 - Form field and validation message
-- Alert
-- Toast
-- Modal or dialog
-- Table
-- Pagination
-- Tabs
+- Alert and confirmation dialog
+- Table and pagination
 - Badge
 - Skeleton
 - Empty state
 - Error state
+
+Toast, tabs, advanced variants, and a standalone component catalog can be added when a selected Plus feature requires them.
 
 **Acceptance criteria**
 
@@ -2697,7 +2749,7 @@ Do not add feature-specific pages in this ticket.
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 3
-- **Dependencies:** FF-2002
+- **Dependencies:** FF-2002, FF-2003, FF-2401
 
 **Acceptance criteria**
 
@@ -2717,7 +2769,7 @@ Do not add feature-specific pages in this ticket.
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-2002
+- **Dependencies:** FF-2002, FF-2003, FF-2102
 
 **Acceptance criteria**
 
@@ -2727,7 +2779,7 @@ Do not add feature-specific pages in this ticket.
 - User menu exposes role and sign-out.
 - Navigation items derive from authorized capabilities, not only hidden CSS.
 - Layout does not introduce horizontal scrolling at supported widths.
-- Keyboard-only navigation is tested manually and through Playwright.
+- Keyboard-only navigation is covered by component/manual checks here and by Playwright under `FF-2402`.
 
 ---
 
@@ -2745,7 +2797,7 @@ Do not add feature-specific pages in this ticket.
 - **Priority:** P0
 - **Delivery tier:** MVP
 - **Estimate:** 8
-- **Dependencies:** FF-0104, FF-2001
+- **Dependencies:** FF-0104, FF-2001, FF-2004
 
 **Scope**
 
@@ -2772,7 +2824,7 @@ Configure Auth.js with Keycloak and a server-managed session.
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-2101
+- **Dependencies:** FF-1401, FF-2002, FF-2101
 
 **Acceptance criteria**
 
@@ -2791,7 +2843,7 @@ Configure Auth.js with Keycloak and a server-managed session.
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-2001, FF-0303, FF-0403, FF-0503, FF-0504
+- **Dependencies:** FF-0201, FF-0503, FF-0504, FF-0507, FF-0909, FF-2001
 
 **Acceptance criteria**
 
@@ -2811,7 +2863,7 @@ Configure Auth.js with Keycloak and a server-managed session.
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-2101, FF-0202
+- **Dependencies:** FF-0202, FF-2004, FF-2101
 
 **MVP scope note**
 
@@ -2900,7 +2952,7 @@ The MVP may use a small, explicitly typed server-only client. `FF-2103` later re
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-2006, FF-2104, FF-0504
+- **Dependencies:** FF-0504, FF-1002, FF-2006, FF-2102, FF-2104
 
 **Acceptance criteria**
 
@@ -2919,7 +2971,7 @@ The MVP may use a small, explicitly typed server-only client. `FF-2103` later re
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-2006, FF-2104, FF-0503
+- **Dependencies:** FF-0507, FF-2006, FF-2104
 
 **MVP scope note**
 
@@ -2994,7 +3046,7 @@ Submit
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-2204, FF-0505, FF-2105
+- **Dependencies:** FF-0505, FF-1004, FF-2105, FF-2204
 
 **Acceptance criteria**
 
@@ -3056,11 +3108,12 @@ Submit
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-2006, FF-2102, FF-1303
+- **Dependencies:** FF-1204, FF-1303, FF-2006, FF-2102, FF-2104
 
 **Acceptance criteria**
 
-- Shows order throughput, success rate, failures by stage, stuck orders, DLQ count, and provider health.
+- Shows order throughput, success rate, failures by stage, stuck orders, and provider health.
+- DLQ count is displayed only when the Stretch notification/DLQ capability is installed; its absence must not break the Plus dashboard.
 - Dashboard makes metric freshness visible.
 - Server-side summary data is used where an operations API exists; direct browser access to Prometheus is prohibited.
 - Charts have accessible text summaries and table alternatives for critical values.
@@ -3074,7 +3127,7 @@ Submit
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-0504, FF-2104, FF-2102
+- **Dependencies:** FF-0504, FF-2006, FF-2102, FF-2104
 
 **Acceptance criteria**
 
@@ -3092,7 +3145,7 @@ Submit
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-1204, FF-0506, FF-1403, FF-2302
+- **Dependencies:** FF-0506, FF-1204, FF-1403, FF-2105, FF-2302
 
 **Acceptance criteria**
 
@@ -3129,7 +3182,7 @@ Submit
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** FF-0909, FF-2105
+- **Dependencies:** FF-0909, FF-2006, FF-2102, FF-2105
 
 **MVP scope note**
 
@@ -3152,7 +3205,7 @@ The MVP supports deterministic percentage routing and a manual Legacy/NextGen se
 - **Priority:** P1
 - **Delivery tier:** STRETCH
 - **Estimate:** 5
-- **Dependencies:** FF-1901, FF-1902, FF-2104
+- **Dependencies:** FF-1901, FF-2006, FF-2104
 
 **Acceptance criteria**
 
@@ -3170,7 +3223,7 @@ The MVP supports deterministic percentage routing and a manual Legacy/NextGen se
 - **Priority:** P2
 - **Delivery tier:** STRETCH
 - **Estimate:** 5
-- **Dependencies:** FF-1403, FF-2104
+- **Dependencies:** FF-1403, FF-2006, FF-2102, FF-2104
 
 **Acceptance criteria**
 
@@ -3383,7 +3436,7 @@ The MVP supports deterministic percentage routing and a manual Legacy/NextGen se
 - **Priority:** P0
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** FF-1701, FF-2001, FF-2401
+- **Dependencies:** FF-1701, FF-2001, FF-2103, FF-2401
 
 **Stages**
 
@@ -3454,7 +3507,7 @@ contract-drift-check
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** MVP functional slice complete through FF-2402
+- **Dependencies:** FF-1302, FF-1303, FF-1504, FF-2204, FF-2305, FF-2402
 
 **Required sections**
 
@@ -3489,7 +3542,7 @@ contract-drift-check
 - **Priority:** P1
 - **Delivery tier:** PLUS
 - **Estimate:** 5
-- **Dependencies:** M5 complete
+- **Dependencies:** FF-1003, FF-1402, FF-1602, FF-2104, FF-2503
 
 **Acceptance criteria**
 
@@ -3507,7 +3560,7 @@ contract-drift-check
 - **Priority:** P1
 - **Delivery tier:** STRETCH
 - **Estimate:** 5
-- **Dependencies:** FF-1204, FF-1306, FF-1104
+- **Dependencies:** FF-0703, FF-0805, FF-0909, FF-1104, FF-1202, FF-1204, FF-1306
 
 **Required runbooks**
 
@@ -3535,7 +3588,7 @@ contract-drift-check
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 3
-- **Dependencies:** FF-0907, FF-0909, FF-1504, FF-2305
+- **Dependencies:** FF-1302, FF-1303, FF-1504, FF-2204, FF-2302, FF-2305
 
 **Required demo paths**
 
@@ -3560,7 +3613,7 @@ contract-drift-check
 - **Priority:** P1
 - **Delivery tier:** MVP
 - **Estimate:** 5
-- **Dependencies:** All MVP-tier tickets
+- **Dependencies:** All other MVP-tier tickets
 
 **Acceptance criteria**
 
@@ -3999,20 +4052,21 @@ Stretch tickets are optional and do not block a portfolio release. Select them o
 
 ## 14.1 MVP sequence
 
-1. Repository and agent foundation: FF-0001, FF-0004
-2. Next.js and local platform foundation: FF-2001, FF-2002, FF-2004, FF-0101
-3. Keycloak, gateway, and web authentication: FF-0104, FF-0201 through FF-0203, FF-2101, FF-2102
-4. Order Service and seeded catalog/customer modules: FF-0501 through FF-0504
-5. Kafka contracts and local messaging: FF-0601, FF-0602, FF-0604
-6. Outbox and duplicate-safe consumers: FF-0701, FF-0702
-7. Payment Service and provider simulator: FF-0801 through FF-0805
-8. Provisioning Service, both simulators, and routing: FF-0901 through FF-0907, FF-0909
-9. Successful Saga and compensation: FF-1001 through FF-1003, FF-1201
-10. BFF and customer portal: FF-2104, FF-2105, FF-2202 through FF-2204
-11. Operations investigation and routing controls: FF-2302, FF-2305
-12. Logs, traces, and metrics: FF-1301 through FF-1303
-13. Backend and browser verification: FF-1502, FF-1504, FF-2401, FF-2402
-14. CI and release material: FF-1701, FF-2601, FF-2604, FF-2605
+1. Repository and agent foundation: FF-0001, FF-0002, FF-0004
+2. Next.js, UI, tests, and local platform foundation: FF-2001 through FF-2004, FF-2401, FF-0101
+3. Keycloak, gateway, authorization matrix, and web session: FF-0104, FF-0201 through FF-0203, FF-1401, FF-2101, FF-2102
+4. Global web states and authenticated shell: FF-2005, FF-2006
+5. Order Service, embedded catalog/capacity, and query APIs: FF-0501, FF-0502, FF-0507, FF-0503, FF-0504
+6. Kafka envelope, event catalog, topics, and local messaging: FF-0601 through FF-0604
+7. Outbox and duplicate-safe consumers: FF-0701, FF-0702
+8. Payment Service and provider simulator: FF-0801 through FF-0805
+9. Provisioning Service, both simulators, routing, and override API: FF-0901 through FF-0907, FF-0909
+10. Successful Saga, compensation, and provider timeouts: FF-1001 through FF-1003, FF-1201
+11. BFF and customer portal: FF-2104, FF-2105, FF-2202 through FF-2204
+12. Operations investigation and routing controls: FF-2302, FF-2305
+13. Logs, traces, and metrics: FF-1301 through FF-1303
+14. Backend and browser verification: FF-1502, FF-1504, FF-2402
+15. CI and release material: FF-1701, FF-2601, FF-2604, FF-2605
 
 Do not start a later step merely because one ticket in the current step is inconvenient. Either finish its dependency, refine it, or document a genuine blocker.
 
